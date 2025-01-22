@@ -1,0 +1,13 @@
+services:
+  # Database service
+  postgres:
+    image: postgres:17-alpine
+    container_name: zap_postgres
+    ports:
+      - 54320:5432
+    environment:
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=zaptest
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
