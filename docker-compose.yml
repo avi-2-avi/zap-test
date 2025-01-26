@@ -9,5 +9,3 @@ services:
       - POSTGRES_PASSWORD=pass
       - POSTGRES_USER=admin
       - POSTGRES_DB=zaptest
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
