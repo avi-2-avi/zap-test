@@ -1,0 +1,65 @@
+### Python
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django migrations
+**/migrations/
+
+# Environment variables
+.env
+
+# Virtual environment
+venv/
+env/
+
+# macOS
+.DS_Store
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Database
+*.sqlite3
+
+# Logs
+*.log
+
+# Static files
+staticfiles/
+static/
+media/
+
+# Cache
+*.cache
+*.mo
+*.pot
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+
+# pytest
+.cache/
+
+# Django secret key
+secrets.json
+
+# Docker
+*.pid
+*.seed
+*.bak
+__MACOSX
+docker-compose.override.yml
+
+# Testing
+*.testresult
+test_output/
+junit/
+
