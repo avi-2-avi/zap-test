@@ -1,1 +1,21 @@
-from django.shortcuts import render
+from core.views.base_view import BaseApiView
+from core.services.signer_service import get_paginated_signers
+from core.serializers.signer_serializer import SignerSerializer
+from core.utils.rest import RestfulResponse
+
+class SignerView(BaseApiView):
+    def get(self, request):
+        try:
+            signers, paginator = get_paginated_signers(request)
+            
+            serializer = SignerSerializer(signers, many=True)
+            
+            return RestfulResponse.paginated_response(
+                data=serializer.data,
+                count=paginator.page.paginator.count,
+                next_url=paginator.get_next_link(),
+                prev_url=paginator.get_previous_link(),
+                message="Signers fetched successfully"
+            )
+        except Exception as e:
+            return self.error_response(message="Failed to fetch signers", errors=str(e))

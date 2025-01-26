@@ -4,9 +4,12 @@ from core.serializers.company_serializer import CompanySerializer
 
 class CompanyView(BaseApiView):
     def get(self, request):
-       companies = get_all_companies()
-       serializer = CompanySerializer(companies, many=True)
-       return self.success_response(data=serializer.data)
+        try:
+            companies = get_all_companies()
+            serializer = CompanySerializer(companies, many=True)
+            return self.success_response(data=serializer.data)
+        except Exception as e:
+            return self.error_response(message="Failed to fetch companies", errors=str(e))
     
     def post(self, request):
         try:
@@ -16,4 +19,3 @@ class CompanyView(BaseApiView):
             return self.success_response(data=serializer.data)
         except Exception as e:
             return self.error_response(message="Failed to create company", errors=str(e))
-        
