@@ -1,15 +1,21 @@
 from rest_framework.pagination import PageNumberPagination
 from core.models.signer import Signer 
+from core.filters.signer_filter import SignerFilter
 
-class DocumentPagination(PageNumberPagination):
+class SignerPagination(PageNumberPagination):
     page_size = 10  
     page_size_query_param = 'page_size'  
     max_page_size = 100 
 
 def get_paginated_signers(request):
-    signers = Signer.objects.all() 
-    paginator = DocumentPagination()
-    paginated_signers = paginator.paginate_queryset(signers, request)
+    queryset = Signer.objects.all()
+    filterset = SignerFilter(request.GET, queryset=queryset)
+    if not filterset.is_valid():
+        raise ValueError(filterset.errors)
+
+    paginator = SignerPagination()
+    paginated_signers = paginator.paginate_queryset(filterset.qs, request)
+
     return paginated_signers, paginator
 
 def create_signer(data):
