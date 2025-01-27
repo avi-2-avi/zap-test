@@ -63,3 +63,50 @@ docker-compose.override.yml
 test_output/
 junit/
 
+
+### Angular
+
+# Angular build output
+frontend/dist/
+frontend/out-tsc/
+
+# NPM dependencies
+frontend/node_modules/
+
+# Angular temporary files
+frontend/.angular/
+frontend/.angular/cache/
+frontend/.npm/
+
+# Environment files
+frontend/src/environments/*.ts
+
+# IDE files
+frontend/.idea/
+frontend/.vscode/
+
+# macOS
+frontend/.DS_Store
+
+# Logs and debugging
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/package-lock.json
+frontend/yarn.lock
+
+# Coverage reports
+frontend/coverage/
+frontend/*.lcov
+
+# Temporary files
+frontend/tmp/
+frontend/temp/
+
+# Generated files
+frontend/*.log
+frontend/*.bak
+
+
+frontend.iml
+

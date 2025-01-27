@@ -3,6 +3,7 @@ from rest_framework.pagination import PageNumberPagination
 from core.models.document import Document
 from core.utils.zapsign import ZapSign
 from core.services.signer_service import create_signer
+from core.filters.document_filter import DocumentFilter
 
 class DocumentPagination(PageNumberPagination):
     page_size = 10  
@@ -10,9 +11,14 @@ class DocumentPagination(PageNumberPagination):
     max_page_size = 100 
 
 def get_paginated_documents(request):
-    documents = Document.objects.all() 
+    queryset = Document.objects.all()
+
+    filterset = DocumentFilter(request.GET, queryset=queryset)
+    if not filterset.is_valid():
+        raise ValueError(filterset.errors)
+
     paginator = DocumentPagination()
-    paginated_documents = paginator.paginate_queryset(documents, request)
+    paginated_documents = paginator.paginate_queryset(filterset.qs, request)
     return paginated_documents, paginator
 
 def create_document(data):
