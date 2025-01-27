@@ -66,4 +66,9 @@ export class DocumentService {
     const url = `${this.baseUrl}/`;
     return this.http.post<any>(url, payload);
   }
+
+  patchDocument(documentId: number, payload: Partial<{ name: string; status: string }>): Observable<any> {
+    const url = `${this.baseUrl}/${documentId}/`;
+    return this.http.patch<any>(url, payload);
+  }
 }

@@ -41,6 +41,10 @@ export class SignerService {
         })),
       }))
     );
+  }
 
+  patchSigner(signerId: number, payload: Partial<{ name: string; email: string; status: string}>): Observable<any> {
+    const url = `${this.baseUrl}/${signerId}/`;
+    return this.http.patch<any>(url, payload);
   }
 }

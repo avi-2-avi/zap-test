@@ -1,3 +1,4 @@
+<p-toast/>
 <div class="card">
   <p-table
     #dt
@@ -13,7 +14,8 @@
     (onLazyLoad)="onLazyLoad($event)"
   >
     <ng-template #caption>
-      <p-button [outlined]="true" severity="info" icon="pi pi-filter-slash" label="Limpiar Filtros" (click)="clearFilters(dt)"/>
+      <p-button [outlined]="true" severity="info" icon="pi pi-filter-slash" label="Limpiar Filtros"
+                (click)="clearFilters(dt)"/>
     </ng-template>
     <ng-template #header>
       <tr>
@@ -35,6 +37,11 @@
             ></p-columnFilter>
           </div>
         </th>
+        <th style="text-align: center;">
+          <div>
+            <span>Acciones</span>
+          </div>
+        </th>
       </tr>
     </ng-template>
 
@@ -44,6 +51,58 @@
         <td>{{ document.name }}</td>
         <td>
           <p-tag [value]="document.status" [severity]="getSeverity(document.status)"></p-tag>
+        </td>
+        <td>
+          <div class="table__actions">
+            <div>
+              <p-button
+                icon="pi pi-pencil"
+                severity="info"
+                (click)="openEditModal(document)"
+              ></p-button>
+              <p-dialog
+                header="Modificar firmante"
+                [modal]="true"
+                [(visible)]="editDialogVisible"
+              >
+                <div class="form-group">
+                  <label class="form-label">Estado</label>
+                  <p-dropdown
+                    [options]="statusOptions"
+                    [(ngModel)]="editFormData.status"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Seleccione un estado"
+                    [ngClass]="{ 'is-invalid': editFormErrors.status }"
+                  ></p-dropdown>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Nombre</label>
+                  <input
+                    pInputText
+                    [(ngModel)]="editFormData.name"
+                    autocomplete="off"
+                    [ngClass]="{ 'is-invalid': editFormErrors.name }"
+                    class="form-input"
+                  />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Correo electrónico</label>
+                  <input
+                    pInputText
+                    [(ngModel)]="editFormData.email"
+                    autocomplete="off"
+                    [ngClass]="{ 'is-invalid': editFormErrors.email }"
+                    class="form-input"
+                  />
+                </div>
+                <div class="dialog-actions">
+                  <p-button label="Cancelar" severity="secondary" (click)="editDialogVisible = false"></p-button>
+                  <p-button label="Guardar" (click)="updateSigner()"></p-button>
+                </div>
+              </p-dialog>
+            </div>
+          </div>
         </td>
       </tr>
     </ng-template>

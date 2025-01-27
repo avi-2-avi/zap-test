@@ -3,8 +3,15 @@ import {Signer} from '../../../core/models/signer';
 import {SignerService} from '../../../core/services/signer.service';
 import {TableLazyLoadEvent, TableModule} from 'primeng/table';
 import {Button} from 'primeng/button';
-import {NgForOf, NgIf} from '@angular/common';
+import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {Tag} from 'primeng/tag';
+import {Dialog} from 'primeng/dialog';
+import {DropdownModule} from 'primeng/dropdown';
+import {InputText} from 'primeng/inputtext';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {ConfirmDialog} from 'primeng/confirmdialog';
+import {Toast} from 'primeng/toast';
+import {MessageService} from 'primeng/api';
 
 @Component({
   selector: 'app-signer-table',
@@ -13,10 +20,18 @@ import {Tag} from 'primeng/tag';
     NgForOf,
     NgIf,
     TableModule,
-    Tag
+    Tag,
+    Dialog,
+    DropdownModule,
+    InputText,
+    ReactiveFormsModule,
+    FormsModule,
+    NgClass,
+    Toast
   ],
   templateUrl: './signer-table.component.html',
-  styleUrl: './signer-table.component.css'
+  styleUrl: './signer-table.component.css',
+  providers: [MessageService]
 })
 export class SignerTableComponent {
   signers: Signer[] = [];
@@ -25,13 +40,35 @@ export class SignerTableComponent {
   searchValue: string = '';
   selectedStatus: string | null = null;
 
+  editDialogVisible: boolean = false;
+  selectedSignerId: number | null = null;
+
+  editFormData = {
+    name: '',
+    email: '',
+    status: '',
+  };
+
+  editFormErrors = {
+    name: false,
+    email: false,
+    status: false,
+  };
+
+  statusOptions = [
+    {label: 'Borrador', value: 'draft'},
+    {label: 'Pendiente', value: 'pending'},
+    {label: 'Nuevo', value: 'new'},
+    {label: 'Rechazado', value: 'rejected'},
+  ];
+
   columns = [
     {field: 'id', header: 'ID', sortable: false},
     {field: 'name', header: 'Nombre', sortable: true},
     {field: 'status', header: 'Estado', sortable: true},
   ];
 
-  constructor(private signerService: SignerService) {
+  constructor(private signerService: SignerService, private messageService: MessageService) {
   }
 
   ngOnInit(): void {
@@ -54,6 +91,66 @@ export class SignerTableComponent {
       this.loading = false;
     });
   }
+
+  isEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  validateEditForm(): boolean {
+    this.editFormErrors = {
+      name: !this.editFormData.name,
+      email: !this.isEmail(this.editFormData.email),
+      status: !this.editFormData.status,
+    };
+
+    return Object.values(this.editFormErrors).every((error) => !error);
+  }
+
+  openEditModal(signer: Signer): void {
+    this.selectedSignerId = signer.id;
+    this.editFormData = {
+      name: signer.name,
+      email: signer.email,
+      status: signer.status,
+    };
+    this.editDialogVisible = true;
+  }
+
+  updateSigner(): void {
+    if (!this.selectedSignerId) return;
+
+    if (!this.validateEditForm()) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Por favor, complete los campos correctamente.',
+      });
+      return;
+    }
+
+    this.signerService
+      .patchSigner(this.selectedSignerId, this.editFormData)
+      .subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Documento actualizado exitosamente',
+          });
+          this.editDialogVisible = false;
+          this.loadSigners(1, 10);
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Ocurrió un problema al actualizar el documento',
+          });
+        }
+      });
+  }
+
 
   clearFilters(table: any): void {
     table.clear();
@@ -85,6 +182,7 @@ export class SignerTableComponent {
 
     this.loadSigners(page, pageSize, filters, sortField, sortOrder);
   }
+
   getSeverity(status: string) {
     switch (status) {
       case 'draft':

@@ -121,11 +121,50 @@
         <td>{{ document.last_updated_at }}</td>
         <td>
           <div class="table__actions">
-            <p-button
-              icon="pi pi-pencil"
-              severity="info"
-              (click)="openEditModal(document)"
-            ></p-button>
+            <div>
+              <p-button
+                icon="pi pi-pencil"
+                severity="info"
+                (click)="openEditModal(document)"
+              ></p-button>
+              <p-dialog
+                header="Modificar documento"
+                [modal]="true"
+                [(visible)]="editDialogVisible"
+              >
+                <div class="form-group">
+                  <label class="form-label">Estado</label>
+                  <p-dropdown
+                    [options]="statusOptions"
+                    [(ngModel)]="editFormData.status"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Seleccione un estado"
+                  ></p-dropdown>
+                </div>
+                <div class="form-group">
+                  <label for="document_name" class="form-label">Nombre de Documento</label>
+                  <input
+                    pInputText
+                    id="name"
+                    class="form-input"
+                    autocomplete="off"
+                    [(ngModel)]="editFormData.name"
+                  />
+                </div>
+                <div class="dialog-actions">
+                  <p-button
+                    label="Cancelar"
+                    severity="secondary"
+                    (click)="editDialogVisible = false"
+                  ></p-button>
+                  <p-button
+                    label="Guardar"
+                    (click)="updateDocument()"
+                  ></p-button>
+                </div>
+              </p-dialog>
+            </div>
             <div>
               <p-button
                 icon="pi pi-trash"

@@ -11,7 +11,7 @@ import {NgForOf, NgIf} from '@angular/common';
 import {Toast} from 'primeng/toast';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
-import { Dialog } from 'primeng/dialog';
+import {Dialog} from 'primeng/dialog';
 import {InputTextModule} from 'primeng/inputtext';
 
 @Component({
@@ -29,7 +29,7 @@ import {InputTextModule} from 'primeng/inputtext';
     ToastModule,
     ButtonModule,
     Dialog,
-    InputTextModule
+    InputTextModule,
   ],
   templateUrl: './document-table.component.html',
   styleUrl: './document-table.component.css',
@@ -41,6 +41,7 @@ export class DocumentTableComponent implements OnInit {
   loading: boolean = true;
   searchValue: string = '';
   selectedStatus: string | null = null;
+  selectedDocumentId: number | null = null;
 
   createDialogVisible: boolean = false;
   editDialogVisible: boolean = false;
@@ -52,6 +53,18 @@ export class DocumentTableComponent implements OnInit {
     signer_name: '',
     signer_email: '',
   };
+
+  editFormData = {
+    name: '',
+    status: '',
+  };
+
+  statusOptions = [
+    {label: 'Borrador', value: 'draft'},
+    {label: 'Pendiente', value: 'pending'},
+    {label: 'Firmado', value: 'signed'},
+    {label: 'Rechazado', value: 'rejected'},
+  ];
 
   createFormErrors = {
     document_name: false,
@@ -80,7 +93,7 @@ export class DocumentTableComponent implements OnInit {
 
     const backendFilters = {
       name: filters.name || null,
-      status: this.selectedStatus || null,
+      status: filters.status || null,
     };
 
     const orderBy = sortField ? `${sortOrder === 'desc' ? '-' : ''}${sortField}` : '';
@@ -206,8 +219,48 @@ export class DocumentTableComponent implements OnInit {
     );
   }
 
-  openEditModal(document: any) {
+  openEditModal(document: any): void {
+    this.selectedDocumentId = document.id;
+    this.editFormData = {
+      name: document.name,
+      status: document.status,
+    };
     this.editDialogVisible = true;
+  }
+
+  updateDocument(): void {
+    if (!this.selectedDocumentId) return;
+
+    if (this.editFormData.name === "") {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Por favor, coloque un nombre para el documento.',
+      });
+      return;
+    }
+
+    this.documentService
+      .patchDocument(this.selectedDocumentId, this.editFormData)
+      .subscribe({
+          next: (response) => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Documento actualizado exitosamente',
+            });
+            this.editDialogVisible = false;
+            this.loadDocuments(1, 10);
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Ocurrió un problema al actualizar el documento',
+            });
+          }
+        }
+      );
   }
 
   openDeleteModal(event: Event, documentId: number) {
