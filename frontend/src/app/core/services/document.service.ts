@@ -49,4 +49,9 @@ export class DocumentService {
       }))
     );
   }
+
+  deleteDocument(documentId: number): Observable<void> {
+    const url = `${this.baseUrl}/${documentId}/`;
+    return this.http.delete<void>(url);
+  }
 }

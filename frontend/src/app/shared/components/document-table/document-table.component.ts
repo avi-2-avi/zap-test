@@ -3,13 +3,14 @@ import {DocumentService} from '../../../core/services/document.service';
 import {Document} from '../../../core/models/document';
 import {TableLazyLoadEvent, TableModule} from 'primeng/table';
 import {Tag} from 'primeng/tag';
-import {Button} from 'primeng/button';
+import {Button, ButtonModule} from 'primeng/button';
 import {FormsModule} from '@angular/forms';
 import {DropdownModule} from 'primeng/dropdown';
-import {InputIcon} from 'primeng/inputicon';
-import {IconField} from 'primeng/iconfield';
-import {InputTextModule} from 'primeng/inputtext';
+import {ConfirmDialog} from 'primeng/confirmdialog';
 import {NgForOf, NgIf} from '@angular/common';
+import {Toast} from 'primeng/toast';
+import {ConfirmationService, MessageService} from 'primeng/api';
+import {ToastModule} from 'primeng/toast';
 
 @Component({
   selector: 'app-document-table',
@@ -21,9 +22,14 @@ import {NgForOf, NgIf} from '@angular/common';
     DropdownModule,
     NgIf,
     NgForOf,
+    Toast,
+    ConfirmDialog,
+    ToastModule,
+    ButtonModule
   ],
   templateUrl: './document-table.component.html',
   styleUrl: './document-table.component.css',
+  providers: [ConfirmationService, MessageService]
 })
 export class DocumentTableComponent implements OnInit {
   documents: Document[] = [];
@@ -40,7 +46,7 @@ export class DocumentTableComponent implements OnInit {
     {field: 'lastUpdatedAt', header: 'Fecha de actualización', sortable: true},
   ];
 
-  constructor(private documentService: DocumentService) {
+  constructor(private documentService: DocumentService, private confirmationService: ConfirmationService, private messageService: MessageService) {
   }
 
   ngOnInit(): void {
@@ -121,7 +127,47 @@ export class DocumentTableComponent implements OnInit {
 
   }
 
-  openDeleteModal(document: any) {
+  openDeleteModal(event: Event, documentId: number) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Eliminara al firmante asociado en el proceso.',
+      header: '¿Esta seguro que desea eliminar el documento?',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancel',
+      rejectButtonProps: {
+        label: 'Cancelar',
+        severity: 'secondary',
+        outlined: true,
+      },
+      acceptButtonProps: {
+        label: 'Eliminar',
+        severity: 'danger',
+      },
 
+      accept: () => {
+        this.documentService.deleteDocument(documentId).subscribe({
+            next: (result: any) => {
+              this.messageService.add({
+                severity: 'info',
+                summary: 'Confirmado',
+                detail: 'Documento y firmante eliminados exitosamente',
+              });
+
+              this.loadDocuments(1, 10);
+            },
+            error: () => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Ocurrió un problema al eliminar el documento',
+              });
+            }
+          }
+        );
+      },
+      reject: () => {
+        // Close the dialog
+      },
+    });
   }
 }

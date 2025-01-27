@@ -1,3 +1,5 @@
+<p-toast/>
+<p-confirmdialog/>
 <div class="card">
   <p-table
     #dt
@@ -14,7 +16,8 @@
   >
     <ng-template #caption>
       <div class="table__header">
-        <p-button [outlined]="true" severity="info" icon="pi pi-filter-slash" label="Limpiar Filtros" (click)="clearFilters(dt)"/>
+        <p-button [outlined]="true" severity="info" icon="pi pi-filter-slash" label="Limpiar Filtros"
+                  (click)="clearFilters(dt)"/>
         <p-button [outlined]="true" severity="success" icon="pi pi-plus" label="Crear documento y firmante"
                   (click)="openCreateModal()"/>
       </div>
@@ -64,11 +67,13 @@
               severity="info"
               (click)="openEditModal(document)"
             ></p-button>
-            <p-button
-              icon="pi pi-trash"
-              severity="danger"
-              (click)="openDeleteModal(document)"
-            ></p-button>
+            <div>
+              <p-button
+                icon="pi pi-trash"
+                severity="danger"
+                (click)="openDeleteModal($event, document.id)"
+              ></p-button>
+            </div>
           </div>
         </td>
       </tr>
