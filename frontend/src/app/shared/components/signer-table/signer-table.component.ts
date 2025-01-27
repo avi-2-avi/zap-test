@@ -66,6 +66,7 @@ export class SignerTableComponent {
   columns = [
     {field: 'id', header: 'ID', sortable: false},
     {field: 'name', header: 'Nombre', sortable: true},
+    {field: 'email', header: 'Correo', sortable: true},
     {field: 'status', header: 'Estado', sortable: true},
   ];
 
@@ -81,6 +82,7 @@ export class SignerTableComponent {
 
     const backendFilters = {
       name: filters.name || null,
+      email: filters.email || null,
       status: this.selectedStatus || null,
     };
 

@@ -19,8 +19,8 @@ export class NavbarComponent {
   ngOnInit() {
     this.items = [
       {
-        label: 'Home',
-        icon: 'pi pi-home',
+        label: 'Documentos',
+        icon: 'pi pi-file',
         routerLink: ['/documents']
       },
       {

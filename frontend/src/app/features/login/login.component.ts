@@ -43,6 +43,8 @@ export class LoginComponent implements OnInit {
             this.apiTokenInputVisible = true;
           }
         } else {
+          localStorage.removeItem('company_id');
+          localStorage.removeItem('api_token');
           this.empresaZapExists = false;
           this.apiTokenInputVisible = true;
         }
@@ -74,16 +76,24 @@ export class LoginComponent implements OnInit {
       .createCompany({name: 'Empresa Zap', api_token: this.apiToken})
       .subscribe({
         next: (response) => {
-          localStorage.setItem('company_id', response.id);
-          localStorage.setItem('api_token', response.api_token);
+          localStorage.setItem('company_id', response.data.id);
+          localStorage.setItem('api_token', this.apiToken);
 
           this.empresaZapExists = true;
           this.apiTokenInputVisible = false;
 
-          this.router.navigate(['/documents']);
+          setTimeout(() => {
+            this.empresaZapExists = true;
+            this.apiTokenInputVisible = false;
+            this.router.navigate(['/documents']);
+          }, 0);
         },
         error: () => {
-          alert('Ocurrió un error al guardar el token.');
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Ocurrió un problema al guardar el token',
+          })
         },
       });
   }
