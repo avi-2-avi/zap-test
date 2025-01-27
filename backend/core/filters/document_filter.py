@@ -3,7 +3,7 @@ from core.models.document import Document
 
 class DocumentFilter(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
-    status = filters.CharFilter(field_name="status", lookup_expr="exact")
+    status = filters.CharFilter(field_name="status", lookup_expr="icontains")
     company_id = filters.NumberFilter(field_name="company_id", lookup_expr="exact")
 
     order_by = filters.OrderingFilter(
