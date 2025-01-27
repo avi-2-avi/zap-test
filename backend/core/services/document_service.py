@@ -45,7 +45,7 @@ def create_document(data):
             raise ValueError(str(e))
 
         # Send document to ZapSign API
-        zapsign = ZapSign()
+        zapsign = ZapSign(api_token=data['api_token'])
         response = zapsign.create_document(
             name=data['document_name'], 
             url_pdf=data['url_pdf'], 

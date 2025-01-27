@@ -3,10 +3,10 @@ import os
 import requests
 
 class ZapSign:
-    def __init__(self):
+    def __init__(self, api_token):
         load_dotenv()
         self.api_url = str(os.environ.get('ZAPSIGN_API_URL'))
-        self.api_token = str(os.environ.get('ZAPSIGN_API_TOKEN'))
+        self.api_token = api_token
     
     def create_document(self, name, url_pdf, signer_name, signer_email):
         endpoint = self.api_url + "/api/v1/docs/"
