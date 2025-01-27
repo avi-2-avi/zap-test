@@ -1,0 +1,10 @@
+.table__header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.table__actions {
+  display: flex;
+  margin-inline: auto;
+  justify-content: space-evenly;
+}
