@@ -6,3 +6,8 @@ export interface PaginatedResponse<T> {
   previous: string | null;
   data: T[];
 }
+
+export interface ListResponse<T> {
+  message: string;
+  data: T[];
+}

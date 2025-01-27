@@ -12,6 +12,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ConfirmDialog} from 'primeng/confirmdialog';
 import {Toast} from 'primeng/toast';
 import {MessageService} from 'primeng/api';
+import {formatDateToSpanishLocal} from '../../utils/date-formatter';
 
 @Component({
   selector: 'app-signer-table',

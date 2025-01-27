@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {map, Observable} from 'rxjs';
-import {PaginatedDocumentsResponse} from '../models/document';
+import {CreateDocumentPayload, PaginatedDocumentsResponse} from '../models/document';
 
 @Injectable({
   providedIn: 'root'
@@ -56,13 +56,7 @@ export class DocumentService {
     return this.http.delete<void>(url);
   }
 
-  createDocument(payload: {
-    company_id: number;
-    document_name: string;
-    url_pdf: string;
-    signer_name: string;
-    signer_email: string;
-  }): Observable<any> {
+  createDocument(payload: CreateDocumentPayload): Observable<any> {
     const url = `${this.baseUrl}/`;
     return this.http.post<any>(url, payload);
   }

@@ -13,6 +13,7 @@ import {ConfirmationService, MessageService} from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
 import {Dialog} from 'primeng/dialog';
 import {InputTextModule} from 'primeng/inputtext';
+import {formatDateToSpanishLocal} from '../../utils/date-formatter';
 
 @Component({
   selector: 'app-document-table',
@@ -42,16 +43,18 @@ export class DocumentTableComponent implements OnInit {
   searchValue: string = '';
   selectedStatus: string | null = null;
   selectedDocumentId: number | null = null;
+  companyId: number | null = null;
 
   createDialogVisible: boolean = false;
   editDialogVisible: boolean = false;
 
   createFormData = {
-    company_id: 1, // Default ID (for our demo)
+    company_id: 0,
     document_name: '',
     url_pdf: '',
     signer_name: '',
     signer_email: '',
+    api_token: '',
   };
 
   editFormData = {
@@ -85,8 +88,27 @@ export class DocumentTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadCompanyIdAndToken();
     this.loadDocuments(1, 10);
   }
+
+  loadCompanyIdAndToken(): void {
+    const storedCompanyId = localStorage.getItem('company_id');
+    const storedApiToken = localStorage.getItem('api_token');
+
+    if (storedCompanyId && storedApiToken) {
+      this.companyId = parseInt(storedCompanyId, 10);
+      this.createFormData.company_id = this.companyId;
+      this.createFormData.api_token = storedApiToken; // Set api_token in the form data
+    } else {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'No se encontró el ID de la empresa o el token de la API, por favor, vuelva a iniciar sesión',
+      })
+    }
+  }
+
 
   loadDocuments(page: number, pageSize: number, filters: any = {}, sortField: string = '', sortOrder: string = ''): void {
     this.loading = true;
@@ -199,11 +221,12 @@ export class DocumentTableComponent implements OnInit {
           this.createDialogVisible = false;
 
           this.createFormData = {
-            company_id: 1,
+            company_id: this.companyId!,
             document_name: '',
             url_pdf: '',
             signer_name: '',
             signer_email: '',
+            api_token: this.createFormData.api_token,
           };
 
           this.loadDocuments(1, 10);
@@ -305,5 +328,9 @@ export class DocumentTableComponent implements OnInit {
         // Close the dialog
       },
     });
+  }
+
+  getFormattedDate(date: string) {
+    return formatDateToSpanishLocal(date);
   }
 }

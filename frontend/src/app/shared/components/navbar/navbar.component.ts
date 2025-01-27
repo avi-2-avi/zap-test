@@ -32,6 +32,8 @@ export class NavbarComponent {
   }
 
   logout() {
+    localStorage.removeItem('company_id');
+    localStorage.removeItem('api_token');
     this.router.navigate(['/login']);
   }
 }
