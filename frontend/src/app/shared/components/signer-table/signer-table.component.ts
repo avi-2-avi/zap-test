@@ -91,7 +91,7 @@ export class SignerTableComponent {
         return 'info';
       case 'pending':
         return 'warn';
-      case 'signed':
+      case 'new':
         return 'success';
       case 'rejected':
         return 'danger';

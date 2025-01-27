@@ -10,7 +10,8 @@ import {PaginatedDocumentsResponse} from '../models/document';
 export class DocumentService {
   private readonly baseUrl = `${environment.apiBaseUrl}/documents`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   getDocuments(page: number = 1,
                pageSize: number = 10,
@@ -53,5 +54,16 @@ export class DocumentService {
   deleteDocument(documentId: number): Observable<void> {
     const url = `${this.baseUrl}/${documentId}/`;
     return this.http.delete<void>(url);
+  }
+
+  createDocument(payload: {
+    company_id: number;
+    document_name: string;
+    url_pdf: string;
+    signer_name: string;
+    signer_email: string;
+  }): Observable<any> {
+    const url = `${this.baseUrl}/`;
+    return this.http.post<any>(url, payload);
   }
 }

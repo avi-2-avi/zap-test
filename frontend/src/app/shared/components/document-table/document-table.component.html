@@ -18,8 +18,67 @@
       <div class="table__header">
         <p-button [outlined]="true" severity="info" icon="pi pi-filter-slash" label="Limpiar Filtros"
                   (click)="clearFilters(dt)"/>
-        <p-button [outlined]="true" severity="success" icon="pi pi-plus" label="Crear documento y firmante"
-                  (click)="openCreateModal()"/>
+        <div>
+          <p-button [outlined]="true" severity="success" icon="pi pi-plus" label="Crear documento y firmante"
+                    (click)="openCreateModal()"/>
+          <p-dialog
+            header="Crear documento y firmante"
+            [modal]="true"
+            [(visible)]="createDialogVisible"
+          >
+            <div class="form-group">
+              <label for="document_name" class="form-label">Nombre de Documento</label>
+              <input
+                pInputText
+                id="document_name"
+                class="form-input"
+                autocomplete="off"
+                [(ngModel)]="createFormData.document_name"
+              />
+            </div>
+            <div class="form-group">
+              <label for="signer_name" class="form-label">Nombre de firmante</label>
+              <input
+                pInputText
+                id="signer_name"
+                class="form-input"
+                autocomplete="off"
+                [(ngModel)]="createFormData.signer_name"
+              />
+            </div>
+            <div class="form-group">
+              <label for="signer_email" class="form-label">Correo firmante</label>
+              <input
+                pInputText
+                id="signer_email"
+                class="form-input"
+                autocomplete="off"
+                [(ngModel)]="createFormData.signer_email"
+              />
+            </div>
+            <div class="form-group">
+              <label for="url_pdf" class="form-label">URL de PDF</label>
+              <input
+                pInputText
+                id="url_pdf"
+                class="form-input"
+                autocomplete="off"
+                [(ngModel)]="createFormData.url_pdf"
+              />
+            </div>
+            <div class="dialog-actions">
+              <p-button
+                label="Cancelar"
+                severity="secondary"
+                (click)="createDialogVisible = false"
+              ></p-button>
+              <p-button
+                label="Guardar"
+                (click)="createDocument()"
+              ></p-button>
+            </div>
+          </p-dialog>
+        </div>
       </div>
     </ng-template>
 

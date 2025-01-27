@@ -11,6 +11,8 @@ import {NgForOf, NgIf} from '@angular/common';
 import {Toast} from 'primeng/toast';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
+import { Dialog } from 'primeng/dialog';
+import {InputTextModule} from 'primeng/inputtext';
 
 @Component({
   selector: 'app-document-table',
@@ -25,7 +27,9 @@ import {ToastModule} from 'primeng/toast';
     Toast,
     ConfirmDialog,
     ToastModule,
-    ButtonModule
+    ButtonModule,
+    Dialog,
+    InputTextModule
   ],
   templateUrl: './document-table.component.html',
   styleUrl: './document-table.component.css',
@@ -37,6 +41,24 @@ export class DocumentTableComponent implements OnInit {
   loading: boolean = true;
   searchValue: string = '';
   selectedStatus: string | null = null;
+
+  createDialogVisible: boolean = false;
+  editDialogVisible: boolean = false;
+
+  createFormData = {
+    company_id: 1, // Default ID (for our demo)
+    document_name: '',
+    url_pdf: '',
+    signer_name: '',
+    signer_email: '',
+  };
+
+  createFormErrors = {
+    document_name: false,
+    signer_name: false,
+    signer_email: false,
+    url_pdf: false,
+  };
 
   columns = [
     {field: 'id', header: 'ID', sortable: false},
@@ -70,7 +92,6 @@ export class DocumentTableComponent implements OnInit {
         this.totalRecords = response.count;
         this.loading = false;
       });
-
   }
 
   clearFilters(table: any): void {
@@ -120,11 +141,73 @@ export class DocumentTableComponent implements OnInit {
   }
 
   openCreateModal() {
+    this.createDialogVisible = true;
+  }
 
+  isEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  isUrl(url: string): boolean {
+    const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+    return urlRegex.test(url);
+  }
+
+  validateCreateForm(): boolean {
+    this.createFormErrors = {
+      document_name: !this.createFormData.document_name,
+      signer_name: !this.createFormData.signer_name,
+      signer_email: !this.isEmail(this.createFormData.signer_email),
+      url_pdf: !this.isUrl(this.createFormData.url_pdf),
+    };
+
+    return Object.values(this.createFormErrors).every((isValid) => !isValid);
+  }
+
+  createDocument() {
+    if (!this.validateCreateForm()) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Por favor, complete los campos requeridos correctamente.',
+      });
+      return;
+    }
+
+    this.documentService.createDocument(this.createFormData).subscribe({
+        next: (response) => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Documento y firmante creados exitosamente',
+          });
+
+          this.createDialogVisible = false;
+
+          this.createFormData = {
+            company_id: 1,
+            document_name: '',
+            url_pdf: '',
+            signer_name: '',
+            signer_email: '',
+          };
+
+          this.loadDocuments(1, 10);
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Ocurrió un problema al crear el documento',
+          });
+        }
+      }
+    );
   }
 
   openEditModal(document: any) {
-
+    this.editDialogVisible = true;
   }
 
   openDeleteModal(event: Event, documentId: number) {
