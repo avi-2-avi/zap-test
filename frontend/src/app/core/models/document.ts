@@ -13,3 +13,12 @@ export interface Document {
 }
 
 export interface PaginatedDocumentsResponse extends PaginatedResponse<Document> {}
+
+export interface CreateDocumentPayload {
+  company_id: number;
+  document_name: string;
+  url_pdf: string;
+  signer_name: string;
+  signer_email: string;
+  api_token: string;
+}

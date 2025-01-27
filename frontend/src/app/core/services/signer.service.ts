@@ -3,7 +3,6 @@ import {environment} from '../../../environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {map, Observable} from 'rxjs';
 import {PaginatedSignersResponse} from '../models/signer';
-import {PaginatedDocumentsResponse} from '../models/document';
 
 @Injectable({
   providedIn: 'root'

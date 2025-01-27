@@ -117,8 +117,8 @@
         <td>
           <p-tag [value]="document.status" [severity]="getSeverity(document.status)"></p-tag>
         </td>
-        <td>{{ document.created_at }}</td>
-        <td>{{ document.last_updated_at }}</td>
+        <td>{{ getFormattedDate(document.created_at) }}</td>
+        <td>{{ getFormattedDate(document.last_updated_at) }}</td>
         <td>
           <div class="table__actions">
             <div>

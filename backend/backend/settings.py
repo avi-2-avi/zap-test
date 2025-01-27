@@ -30,7 +30,10 @@ SECRET_KEY = 'django-insecure-p!k9=s#g30#fc41%c+x9t^wxg(8--k*zntx4=gitmi0s%@zp22
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '0.0.0.0',
+    '127.0.0.1'
+]
 
 
 # Application definition
@@ -138,6 +141,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",  # Angular app running locally
+    "http://0.0.0.0:4200" # Django app running on Docker
 ]
 
 CORS_ALLOW_METHODS = (

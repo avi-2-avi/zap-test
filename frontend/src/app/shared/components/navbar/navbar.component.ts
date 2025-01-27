@@ -19,8 +19,8 @@ export class NavbarComponent {
   ngOnInit() {
     this.items = [
       {
-        label: 'Home',
-        icon: 'pi pi-home',
+        label: 'Documentos',
+        icon: 'pi pi-file',
         routerLink: ['/documents']
       },
       {
@@ -32,6 +32,8 @@ export class NavbarComponent {
   }
 
   logout() {
+    localStorage.removeItem('company_id');
+    localStorage.removeItem('api_token');
     this.router.navigate(['/login']);
   }
 }

@@ -1,11 +1,42 @@
 services:
-  # Database service
   postgres:
     image: postgres:17-alpine
     container_name: zap_postgres
     ports:
       - 54320:5432
     environment:
-      - POSTGRES_PASSWORD=pass
-      - POSTGRES_USER=admin
-      - POSTGRES_DB=zaptest
+      POSTGRES_PASSWORD: pass
+      POSTGRES_USER: admin
+      POSTGRES_DB: zaptest
+  django:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: zap_django
+    ports:
+      - 8000:8000
+    environment:
+      DB_NAME: zaptest
+      DB_USER: admin
+      DB_PASSWORD: pass
+      DB_HOST: postgres
+      DB_PORT: 5432
+      ZAPSIGN_API_URL: https://sandbox.api.zapsign.com.br
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+    command: >
+      sh -c "python backend/manage.py migrate &&
+             python backend/manage.py runserver 0.0.0.0:8000"
+  angular:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: zap_angular
+    ports:
+      - 4200:4200
+    depends_on:
+      - django
+volumes:
+  postgres_data:
